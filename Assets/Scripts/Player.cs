@@ -4,36 +4,52 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 5f;
+    public float speed = 20f;
+    public float rotateSpeed = 1f;
+
+    // Control scheme false = mouse, true = keys
+    public bool controlScheme;
     // Start is called before the first frame update
     void Start()
     {
-
+        controlScheme = false; // default mouse control
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown("m"))
+        {
+            Debug.Log("Contorl scheme changed " + controlScheme);
+            controlScheme = !controlScheme;
+        }
+
         Vector3 pos = transform.position;
 
-        if (Input.GetKey("w"))
+        if (controlScheme)
         {
-            pos.y += speed * Time.deltaTime;
-        }
+            if (Input.GetKey("w"))
+            {
+                pos.y += speed;
+            }
 
-        if (Input.GetKey("a"))
-        {
-            pos.x -= speed * Time.deltaTime;
-        }
+            if (Input.GetKey("a"))
+            {
+                transform.Rotate(-Vector3.up * rotateSpeed * Time.deltaTime);
+            }
 
-        if (Input.GetKey("s"))
-        {
-            pos.y -= speed * Time.deltaTime;
-        }
+            if (Input.GetKey("s"))
+            {
+            }
 
-        if (Input.GetKey("d"))
+            if (Input.GetKey("d"))
+            {
+                transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
+            }
+        }
+        else
         {
-            pos.x += speed * Time.deltaTime;
+
         }
 
         transform.position = pos;
