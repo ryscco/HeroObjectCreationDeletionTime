@@ -4,7 +4,8 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
-    public float speed = 20f;
+    Rigidbody2D playerRB2D;
+    public float speed = 1f;
     public float rotateSpeed = 1f;
 
     // Control scheme false = mouse, true = keys
@@ -13,6 +14,7 @@ public class Player : MonoBehaviour
     void Start()
     {
         controlScheme = false; // default mouse control
+        playerRB2D = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -24,10 +26,10 @@ public class Player : MonoBehaviour
             controlScheme = !controlScheme;
         }
 
-        Vector3 pos = transform.position;
-
         if (controlScheme)
         {
+            Vector3 pos = playerRB2D.transform.position;
+
             if (Input.GetKey("w"))
             {
                 pos.y += speed;
@@ -35,23 +37,24 @@ public class Player : MonoBehaviour
 
             if (Input.GetKey("a"))
             {
-                transform.Rotate(-Vector3.up * rotateSpeed * Time.deltaTime);
+                playerRB2D.transform.Rotate(Vector3.forward * rotateSpeed);
             }
 
             if (Input.GetKey("s"))
             {
+                pos.y -= speed;
             }
 
             if (Input.GetKey("d"))
             {
-                transform.Rotate(Vector3.up * rotateSpeed * Time.deltaTime);
+                playerRB2D.transform.Rotate(Vector3.forward * -rotateSpeed);
             }
+
+            playerRB2D.transform.position = pos;
         }
         else
         {
 
         }
-
-        transform.position = pos;
     }
 }
