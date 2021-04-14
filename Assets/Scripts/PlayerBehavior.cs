@@ -8,18 +8,18 @@ public class PlayerBehavior : MonoBehaviour
     public Text enemyCountText = null;
     public float moveSpeed = 20f;
     public float maxMoveSpeed = 150f;
-    public float rotateSpeed = 90f / 2f; // 90-degrees in 2 seconds
+    public float rotateSpeed = 120f / 2f; // 120-degrees in 2 seconds
     public float accelerationFactor = 0.15f;
     public bool controlScheme = true; // true is mouse, false is keyboard
     private int numPlanesTouched = 0;
-
-    // private GameController mGameGameController = null;
-
+    public float shootCooldownTime = 0.2f;
+    private bool shootCooldownToggle = false;
+    private float nextFireTime = 0;
+    private GameController mGameGameController = null;
     void Start()
     {
-        // mGameGameController = FindObjectOfType<GameController>();
+        mGameGameController = FindObjectOfType<GameController>();
     }
-
     void Update()
     {
         if (Input.GetKeyDown("m"))
@@ -32,9 +32,7 @@ public class PlayerBehavior : MonoBehaviour
         if (controlScheme)
         {
             pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-            // Debug.Log("Position is " + pos);
-            pos.z = 0f;  // <-- this is VERY IMPORTANT!
-            // Debug.Log("Screen Point:" + Input.mousePosition + "  World Point:" + p);
+            pos.z = 0f;
         }
         else
         {
@@ -75,16 +73,23 @@ public class PlayerBehavior : MonoBehaviour
                 transform.Rotate(transform.forward, -rotateSpeed * Time.smoothDeltaTime);
             }
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Time.time > nextFireTime)
         {
-            GameObject bullet = Instantiate(Resources.Load("Prefabs/Projectile") as GameObject);
-            bullet.transform.localPosition = transform.localPosition;
-            bullet.transform.rotation = transform.rotation;
-            Debug.Log("Spawn Projectile:" + bullet.transform.localPosition);
+            if (shootCooldownToggle)
+            {
+                shootCooldownToggle = false;
+            }
+            if (Input.GetKey(KeyCode.Space))
+            {
+                GameObject projectile = Instantiate(Resources.Load("Prefabs/Projectile") as GameObject);
+                projectile.transform.localPosition = transform.localPosition;
+                projectile.transform.rotation = transform.rotation;
+                Debug.Log("Spawn Projectile:" + projectile.transform.localPosition);
+                nextFireTime = Time.time + shootCooldownTime;
+            }
         }
         transform.position = pos;
     }
-
     private void OnTriggerEnter2D(Collider2D collision)
     {
         Debug.Log("Here x Plane: OnTriggerEnter2D");
@@ -93,7 +98,6 @@ public class PlayerBehavior : MonoBehaviour
         Destroy(collision.gameObject);
         // mGameGameController.EnemyDestroyed();
     }
-
     private void OnTriggerStay2D(Collider2D collision)
     {
         Debug.Log("Here x Plane: OnTriggerStay2D");
