@@ -134,6 +134,7 @@ GameObject:
   - component: {fileID: 441907536}
   - component: {fileID: 441907535}
   - component: {fileID: 441907538}
+  - component: {fileID: 441907537}
   m_Layer: 0
   m_Name: Player
   m_TagString: Untagged
@@ -206,6 +207,24 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &441907537
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 441907534}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5bdba7b0f2f8ee84da27ac1356a1bde3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyCountText: {fileID: 0}
+  moveSpeed: 20
+  maxMoveSpeed: 50
+  rotateSpeed: 45
+  accelerationFactor: 0.1
+  controlScheme: 1
 --- !u!50 &441907538
 Rigidbody2D:
   serializedVersion: 4

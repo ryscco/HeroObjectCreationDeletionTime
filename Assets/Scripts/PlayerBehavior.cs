@@ -1,60 +1,101 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
-public class Player : MonoBehaviour
+public class PlayerBehavior : MonoBehaviour
 {
-    Rigidbody2D playerRB2D;
-    public float speed = 1f;
-    public float rotateSpeed = 1f;
+    public Text enemyCountText = null;
+    public float moveSpeed = 20f;
+    public float maxMoveSpeed = 150f;
+    public float rotateSpeed = 90f / 2f; // 90-degrees in 2 seconds
+    public float accelerationFactor = 0.15f;
+    public bool controlScheme = true; // true is mouse, false is keyboard
+    private int numPlanesTouched = 0;
 
-    // Control scheme false = mouse, true = keys
-    public bool controlScheme;
-    // Start is called before the first frame update
+    // private GameController mGameGameController = null;
+
     void Start()
     {
-        controlScheme = false; // default mouse control
-        playerRB2D = GetComponent<Rigidbody2D>();
+        // mGameGameController = FindObjectOfType<GameController>();
     }
 
-    // Update is called once per frame
     void Update()
     {
         if (Input.GetKeyDown("m"))
         {
-            Debug.Log("Contorl scheme changed " + controlScheme);
             controlScheme = !controlScheme;
+            moveSpeed = 20f;
         }
+        Vector3 pos = transform.position;
 
         if (controlScheme)
         {
-            Vector3 pos = playerRB2D.transform.position;
-
-            if (Input.GetKey("w"))
+            pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+            // Debug.Log("Position is " + pos);
+            pos.z = 0f;  // <-- this is VERY IMPORTANT!
+            // Debug.Log("Screen Point:" + Input.mousePosition + "  World Point:" + p);
+        }
+        else
+        {
+            if (Input.GetKey("w") || Input.GetKey("s"))
             {
-                pos.y += speed;
+                if (moveSpeed < maxMoveSpeed)
+                {
+                    moveSpeed += accelerationFactor;
+                }
+                else if (moveSpeed == maxMoveSpeed)
+                {
+                    moveSpeed = maxMoveSpeed;
+                }
+                if (Input.GetKey("w"))
+                {
+                    pos += ((moveSpeed * Time.smoothDeltaTime) * transform.up);
+
+                }
+                if (Input.GetKey("s"))
+                {
+                    pos -= ((moveSpeed * Time.smoothDeltaTime) * transform.up);
+
+                }
+            }
+
+            if ((moveSpeed > 20) && !(Input.GetKey("w") || Input.GetKey("s")))
+            {
+                moveSpeed -= accelerationFactor;
             }
 
             if (Input.GetKey("a"))
             {
-                playerRB2D.transform.Rotate(Vector3.forward * rotateSpeed);
-            }
-
-            if (Input.GetKey("s"))
-            {
-                pos.y -= speed;
+                transform.Rotate(transform.forward, rotateSpeed * Time.smoothDeltaTime);
             }
 
             if (Input.GetKey("d"))
             {
-                playerRB2D.transform.Rotate(Vector3.forward * -rotateSpeed);
+                transform.Rotate(transform.forward, -rotateSpeed * Time.smoothDeltaTime);
             }
-
-            playerRB2D.transform.position = pos;
         }
-        else
+        if (Input.GetKey(KeyCode.Space))
         {
-
+            GameObject bullet = Instantiate(Resources.Load("Prefabs/Projectile") as GameObject);
+            bullet.transform.localPosition = transform.localPosition;
+            bullet.transform.rotation = transform.rotation;
+            Debug.Log("Spawn Projectile:" + bullet.transform.localPosition);
         }
+        transform.position = pos;
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        Debug.Log("Here x Plane: OnTriggerEnter2D");
+        numPlanesTouched = numPlanesTouched + 1;
+        enemyCountText.text = "Planes touched = " + numPlanesTouched;
+        Destroy(collision.gameObject);
+        // mGameGameController.EnemyDestroyed();
+    }
+
+    private void OnTriggerStay2D(Collider2D collision)
+    {
+        Debug.Log("Here x Plane: OnTriggerStay2D");
     }
 }
