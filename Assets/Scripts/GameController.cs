@@ -11,7 +11,7 @@ public class GameController : MonoBehaviour
     void Update()
     {
         numberOfEnemies = (GameObject.FindGameObjectsWithTag("Enemy").Length);
-        if (Input.GetKey(KeyCode.Escape))
+        if (Input.GetKey(KeyCode.Q))
         {
 #if UNITY_EDITOR
             UnityEditor.EditorApplication.isPlaying = false;
