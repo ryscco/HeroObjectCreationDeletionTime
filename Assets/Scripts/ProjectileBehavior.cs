@@ -9,9 +9,6 @@ public class ProjectileBehavior : MonoBehaviour
     {
         transform.position += transform.up * (projectileSpeed * Time.smoothDeltaTime);
     }
-    private void OnTriggerEnter2D(Collider2D other) {
-        Destroy(other);    
-    }
     private void OnBecameInvisible() {
         Destroy(gameObject);
     }

@@ -4,10 +4,11 @@ using UnityEngine;
 
 public class GameController : MonoBehaviour
 {
-    private int maxPlanes = 10;
-    private int numberOfPlanes = 0;
+    private int maxEnemies = 10;
+    private int numberOfEnemies = 0;
     void Update()
     {
+        numberOfEnemies = (GameObject.FindGameObjectsWithTag("Enemy").Length);
         if (Input.GetKey(KeyCode.Escape))
         {
 #if UNITY_EDITOR
@@ -16,22 +17,16 @@ public class GameController : MonoBehaviour
             Application.Quit();
 #endif
         }
-        if (numberOfPlanes < maxPlanes)
+        if (numberOfEnemies < maxEnemies)
         {
-            // CameraSupport s = Camera.main.GetComponent<CameraSupport>();
-
-            GameObject enemy = Instantiate(Resources.Load("Prefabs/Enemy") as GameObject); // Prefab MUST BE locaed in Resources/Prefab folder!
+            CameraSupport camSupp = Camera.main.GetComponent<CameraSupport>();
+            GameObject enemy = Instantiate(Resources.Load("Prefabs/Enemy") as GameObject);
+            enemy.GetComponent<EnemyBehavior>().setRotateSpeed(Random.value);
             Vector3 pos;
-            // pos.x = camSupp.GetWorldBound().min.x + Random.value * (camSupp.GetWorldBound().size.x * 90);
-            // pos.y = camSupp.GetWorldBound().min.y + Random.value * (camSupp.GetWorldBound().size.y * 90);
+            pos.x = (camSupp.GetWorldBound().min.x + Random.value * camSupp.GetWorldBound().size.x)*0.9f;
+            pos.y = (camSupp.GetWorldBound().min.y + Random.value * camSupp.GetWorldBound().size.y)*0.9f;
             pos.z = 0;
-            // enemy.transform.localPosition = pos;
-            ++numberOfPlanes;
+            enemy.transform.localPosition = pos;
         }
-    }
-
-    public void EnemyDestroyed()
-    {
-        --numberOfPlanes;
     }
 }
