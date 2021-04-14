@@ -90,16 +90,4 @@ public class PlayerBehavior : MonoBehaviour
         }
         transform.position = pos;
     }
-    // private void OnTriggerEnter2D(Collider2D collision)
-    // {
-    //     Debug.Log("Here x Plane: OnTriggerEnter2D");
-    //     numPlanesTouched = numPlanesTouched + 1;
-    //     enemyCountText.text = "Planes touched = " + numPlanesTouched;
-    //     Destroy(collision.gameObject);
-    //     // mGameGameController.EnemyDestroyed();
-    // }
-    // private void OnTriggerStay2D(Collider2D collision)
-    // {
-    //     Debug.Log("Here x Plane: OnTriggerStay2D");
-    // }
 }

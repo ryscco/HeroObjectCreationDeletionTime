@@ -6,6 +6,8 @@ public class GameController : MonoBehaviour
 {
     private int maxEnemies = 10;
     private int numberOfEnemies = 0;
+    public int numberOfEnemiesKilled = 0;
+    public int numberOfEnemiesTouched = 0;
     void Update()
     {
         numberOfEnemies = (GameObject.FindGameObjectsWithTag("Enemy").Length);

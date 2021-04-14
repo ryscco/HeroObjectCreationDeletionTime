@@ -12,6 +12,6 @@ public class TextTrackEnemies : MonoBehaviour
     }
     void Update()
     {
-        thisText.text = "Enemies in world: " + (GameObject.FindGameObjectsWithTag("Enemy").Length);
+        thisText.text = "Enemies in world: " + (GameObject.FindGameObjectsWithTag("Enemy").Length + "\nEnemies Destroyed: " + GameObject.FindObjectOfType<GameController>().numberOfEnemiesKilled);
     }
 }
