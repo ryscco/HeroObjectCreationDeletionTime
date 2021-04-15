@@ -5,20 +5,22 @@ using UnityEngine.UI;
 
 public class PlayerBehavior : MonoBehaviour
 {
-    public Text enemyCountText = null;
     public float moveSpeed = 20f;
     public float maxMoveSpeed = 150f;
-    public float rotateSpeed = 120f / 2f; // 120-degrees in 2 seconds
+    public float rotateSpeed = 180f / 2f; // 180-degrees in 2 seconds
     public float accelerationFactor = 0.15f;
     public bool controlScheme = true; // true is mouse, false is keyboard
-    private int numPlanesTouched = 0;
     public float shootCooldownTime = 0.2f;
     private bool shootCooldownToggle = false;
     private float nextFireTime = 0;
     private GameController mGameGameController = null;
+    private float spriteSizeX = 0;
+    private float spriteSizeY = 0;
     void Start()
     {
         mGameGameController = FindObjectOfType<GameController>();
+        spriteSizeX = gameObject.GetComponent<SpriteRenderer>().bounds.size.x;
+        spriteSizeY = gameObject.GetComponent<SpriteRenderer>().bounds.size.y;
     }
     void Update()
     {
@@ -29,7 +31,7 @@ public class PlayerBehavior : MonoBehaviour
         }
         Vector3 pos = transform.position;
 
-        if (controlScheme)
+        if (controlScheme) // Default scheme is player locked to mouse
         {
             pos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
             pos.z = 0f;
@@ -57,22 +59,39 @@ public class PlayerBehavior : MonoBehaviour
 
                 }
             }
-
+            // Decelerate player when movement keys aren't held
             if ((moveSpeed > 20) && !(Input.GetKey("w") || Input.GetKey("s")))
             {
                 moveSpeed -= accelerationFactor;
             }
-
-            if (Input.GetKey("a"))
+            // Check player position for edge transitioning
+            if (pos.x < -140)
             {
-                transform.Rotate(transform.forward, rotateSpeed * Time.smoothDeltaTime);
+                pos.x = 140;
             }
-
-            if (Input.GetKey("d"))
+            if (pos.y > 110)
             {
-                transform.Rotate(transform.forward, -rotateSpeed * Time.smoothDeltaTime);
+                pos.y = -110;
+            }
+            if (pos.x > 140)
+            {
+                pos.x = -140;
+            }
+            if (pos.y < -110)
+            {
+                pos.y = 110;
             }
         }
+        // Rotation active during both control schemes
+        if (Input.GetKey("a"))
+        {
+            transform.Rotate(transform.forward, rotateSpeed * Time.smoothDeltaTime);
+        }
+        if (Input.GetKey("d"))
+        {
+            transform.Rotate(transform.forward, -rotateSpeed * Time.smoothDeltaTime);
+        }
+        // Constrain fire rate
         if (Time.time > nextFireTime)
         {
             if (shootCooldownToggle)
@@ -84,10 +103,10 @@ public class PlayerBehavior : MonoBehaviour
                 GameObject projectile = Instantiate(Resources.Load("Prefabs/Projectile") as GameObject);
                 projectile.transform.localPosition = transform.localPosition;
                 projectile.transform.rotation = transform.rotation;
-                Debug.Log("Spawn Projectile:" + projectile.transform.localPosition);
                 nextFireTime = Time.time + shootCooldownTime;
             }
         }
+        // Update position based on any inputs
         transform.position = pos;
     }
 }
